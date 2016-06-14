@@ -56,13 +56,13 @@ void print(mytimer* pmt)
 	int i;
 	for(i=0;i<pmt->corenumber;i++)
 	{
-		fprintf(stderr,"app %ld;stack %ld;packet %ld\n",
+		fprintf(stderr,"app %lld;stack %lld;packet %lld\n",
 				pmt->time[i][APP],pmt->time[i][MTCP],pmt->time[i][PACKETIO]);
 	}
 	int core;
 	char fname[20];
 	FILE* fout=NULL;
-	record* cur,nxt;
+	record *cur,*nxt;
 	for(core=0;core<pmt->corenumber;core++)
 	{
 		sprintf(fname,"mytimer%d.log",core);
@@ -77,7 +77,7 @@ void print(mytimer* pmt)
 		while(cur)
 		{
 			nxt=cur->next;
-			fprintf(fout,"%d event at %ld\n",cur->type,cur->time);
+			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
 			cur=nxt;
 		}
 		fclose(fout);

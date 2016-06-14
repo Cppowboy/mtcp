@@ -29,7 +29,7 @@ typedef struct _record
 {
 	long long time;
 	int type;
-	record* next;
+	struct _record *next;
 }record;
 
 typedef struct _mytimer
