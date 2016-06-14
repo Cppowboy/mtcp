@@ -14,8 +14,7 @@
 ## chroot example aswell.
 ##
 var.log_root    = "/tmp/lighttpd"
-#var.server_root = "/srv/www"
-var.server_root = "/home/abc/server-root/"
+var.server_root = "/srv/www"
 var.state_dir   = "/var/run"
 var.home_dir    = "/var/lib/lighttpd"
 var.conf_dir    = "/etc/lighttpd"
@@ -115,10 +114,7 @@ server.bind = "10.0.1.3"
 ##
 #server.document-root = server_root + "/htdocs"
 #server.document-root = "/home/notav/www"
-
-#server.document-root = "/home/abc/mtcp/apps/lighttpd-1.4.32/"
-#
-server.document-root = "/home/abc/mtcp/apps/lighttpd-1.4.32/tests/docroot/www/"
+server.document-root = "/mnt/sda1/home/ajamshed/mtcp-examples/www"
 
 ##
 ## The value for the "Server:" response field.

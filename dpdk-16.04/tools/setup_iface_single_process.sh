@@ -46,7 +46,7 @@ cd -
 # Configure each device (single-process version)
 while [ $counter -gt 0 ]
 do
-    echo "/sbin/ifconfig dpdk$(($counter - 1)) 10.0.$(( $counter - 1 )).$1 netmask 255.255.255.0 up"
-    /sbin/ifconfig dpdk$(($counter - 1)) 10.0.$(($counter - 1)).$1 netmask 255.255.255.0 up
+    echo "/sbin/ifconfig p2p$(($counter)) 10.0.$(( $counter)).$1 netmask 255.255.255.0 up"
+    /sbin/ifconfig p2p$(($counter)) 10.0.$(($counter)).$1 netmask 255.255.255.0 up
     let "counter=$counter - 1"
 done
