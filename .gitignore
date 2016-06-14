@@ -1,3 +1,5 @@
 !.gitignore
 *.log
 *_log
+.project
+.cproject
