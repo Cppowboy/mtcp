@@ -28,6 +28,7 @@
 #include "ip_out.h"
 #include "timer.h"
 #include "debug.h"
+#include "mytimer.h"
 
 #ifndef DISABLE_DPDK
 /* for launching rte thread */
@@ -732,8 +733,9 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 	TRACE_DBG("CPU %d: mtcp thread running.\n", ctx->cpu);
 
 	ts = ts_prev = 0;
+	long long start,end;
 	while ((!ctx->done || mtcp->flow_cnt) && !ctx->exit) {
-		
+		start=rte_rdtsc_precise();
 		STAT_COUNT(mtcp->runstat.rounds);
 		recv_cnt = 0;
 			
@@ -741,10 +743,19 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 		ts = TIMEVAL_TO_TS(&cur_ts);
 		mtcp->cur_ts = ts;
 
+
 		for (rx_inf = 0; rx_inf < CONFIG.eths_num; rx_inf++) {
+
+			end=rte_rdtsc_precise();
+			addtime(getmytimer(),ctx->cpu,MTCP,end-start);
+			start=end;
 
 			recv_cnt = mtcp->iom->recv_pkts(ctx, rx_inf);
 			STAT_COUNT(mtcp->runstat.rounds_rx_try);
+
+			end=rte_rdtsc_precise();
+			addtime(getmytimer(),ctx->cpu,PACKETIO,end-start);
+			start=end;
 
 			for (i = 0; i < recv_cnt; i++) {
 				uint16_t len;
@@ -753,6 +764,8 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 				ProcessPacket(mtcp, rx_inf, ts, pktbuf, len);
 			}
 		}
+
+
 		STAT_COUNT(mtcp->runstat.rounds_rx);
 
 		/* interaction with application */
@@ -798,7 +811,16 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 		/* send packets from write buffer */
 		/* send until tx is available */
 		for (tx_inf = 0; tx_inf < CONFIG.eths_num; tx_inf++) {
+
+			end=rte_rdtsc_precise();
+			addtime(getmytimer(),ctx->cpu,MTCP,end-start);
+			start=end;
+
 			mtcp->iom->send_pkts(ctx, tx_inf);
+
+			end=rte_rdtsc_precise();
+			addtime(getmytimer(),ctx->cpu,PACKETIO,end-start);
+			start=end;
 		}
 
 		if (ts != ts_prev) {
@@ -814,6 +836,9 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 		if (ctx->interrupt) {
 			InterruptApplication(mtcp);
 		}
+		end=rte_rdtsc_precise();
+		addtime(getmytimer(),ctx->cpu,MTCP,end-start);
+		start=end;
 	}
 
 #if TESTING
@@ -1379,7 +1404,7 @@ mtcp_init(char *config_file)
 	num_cpus = (CONFIG.num_cores == 0) ? GetNumCPUs() : CONFIG.num_cores;
 			
 	assert(num_cpus >= 1);
-
+	setcorenumber(getmytimer(),num_cpus);
 	if (num_cpus > MAX_CPUS) {
 		TRACE_ERROR("You cannot run mTCP with more than %d cores due "
 			    "to NIC hardware queues restriction. Please disable "
@@ -1451,5 +1476,8 @@ mtcp_destroy()
 	DestroyAddressPool(ap);
 
 	TRACE_INFO("All MTCP threads are joined.\n");
+	print(getmytimer());
+	destroytimer(getmytimer());
+	TRACE_INFO("all finished\n");
 }
 /*----------------------------------------------------------------------------*/
