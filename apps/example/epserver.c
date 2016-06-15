@@ -439,6 +439,9 @@ RunServerThread(void *arg)
 
 	while (!done[core]) {
 		start=rte_rdtsc_precise();
+		rbuf.time=start;
+		rbuf.type=APP_START;
+		push(getmytimer(),core,rbuf);
 		nevents = mtcp_epoll_wait(mctx, ep, events, MAX_EVENTS, -1);
 		if (nevents < 0) {
 			if (errno != EINTR)
@@ -510,7 +513,8 @@ RunServerThread(void *arg)
 			}
 		}
 		end=rte_rdtsc_precise();
-		rbuf.time=end-start;
+		rbuf.time=end;
+		rbuf.type=APP_END;
 		push(getmytimer(),core,rbuf);
 		addtime(getmytimer(),core,APP,rbuf.time);
 	}

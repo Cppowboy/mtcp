@@ -24,11 +24,12 @@
 #define PACKETIO_OUT 3
 #define MTCP_OUT 4
 #define APP_END 5
+#define SEND_REQUEST 6
 
 typedef struct _record
 {
 	long long time;
-	long long stacktime,packettime;
+//	long long stacktime,packettime;
 	int type;
 	struct _record *next;
 }record;
@@ -50,5 +51,8 @@ void push(mytimer* pmt,int core,record r);
 void print(mytimer* pmt);
 void destroytimer(mytimer* pmt);
 void taketime(long long t);
+
+double lognormal(double u,double sigma);
+double weibull(double a,double b);
 
 #endif /* MTCP_SRC_INCLUDE_MYTIMER_H_ */

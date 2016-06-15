@@ -736,8 +736,11 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 	long long start,end;
 	record rbuf;
 	while ((!ctx->done || mtcp->flow_cnt) && !ctx->exit) {
-		rbuf.stacktime=rbuf.packettime=0;
+//		rbuf.stacktime=rbuf.packettime=0;
 		start=rte_rdtsc_precise();
+		rbuf.time=start;
+		rbuf.type=MTCP_IN;
+		push(getmytimer(),ctx->cpu,rbuf);
 		STAT_COUNT(mtcp->runstat.rounds);
 		recv_cnt = 0;
 			
@@ -750,7 +753,12 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 
 			end=rte_rdtsc_precise();
 			addtime(getmytimer(),ctx->cpu,MTCP,end-start);
-			rbuf.stacktime+=end-start;
+//			rbuf.stacktime+=end-start;
+			rbuf.time=end;
+			rbuf.type=MTCP_OUT;
+			push(getmytimer(),ctx->cpu,rbuf);
+			rbuf.type=PACKETIO_IN;
+			push(getmytimer(),ctx->cpu,rbuf);
 			start=end;
 
 			recv_cnt = mtcp->iom->recv_pkts(ctx, rx_inf);
@@ -758,7 +766,12 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 
 			end=rte_rdtsc_precise();
 			addtime(getmytimer(),ctx->cpu,PACKETIO,end-start);
-			rbuf.packettime+=end-start;
+//			rbuf.packettime+=end-start;
+			rbuf.time=end;
+			rbuf.type=PACKETIO_OUT;
+			push(getmytimer(),ctx->cpu,rbuf);
+			rbuf.type=MTCP_IN;
+			push(getmytimer(),ctx->cpu,rbuf);
 			start=end;
 
 			for (i = 0; i < recv_cnt; i++) {
@@ -818,14 +831,24 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 
 			end=rte_rdtsc_precise();
 			addtime(getmytimer(),ctx->cpu,MTCP,end-start);
-			rbuf.stacktime+=end-start;
+//			rbuf.stacktime+=end-start;
+			rbuf.time=end;
+			rbuf.type=MTCP_OUT;
+			push(getmytimer(),ctx->cpu,rbuf);
+			rbuf.type=PACKETIO_IN;
+			push(getmytimer(),ctx->cpu,rbuf);
 			start=end;
 
 			mtcp->iom->send_pkts(ctx, tx_inf);
 
 			end=rte_rdtsc_precise();
 			addtime(getmytimer(),ctx->cpu,PACKETIO,end-start);
-			rbuf.packettime+=end-start;
+//			rbuf.packettime+=end-start;
+			rbuf.time=end;
+			rbuf.type=PACKETIO_OUT;
+			push(getmytimer(),ctx->cpu,rbuf);
+			rbuf.type=MTCP_IN;
+			push(getmytimer(),ctx->cpu,rbuf);
 			start=end;
 		}
 
@@ -844,7 +867,9 @@ RunMainLoop(struct mtcp_thread_context *ctx)
 		}
 		end=rte_rdtsc_precise();
 		addtime(getmytimer(),ctx->cpu,MTCP,end-start);
-		rbuf.stacktime+=end-start;
+//		rbuf.stacktime+=end-start;
+		rbuf.time=end;
+		rbuf.type=MTCP_OUT;
 		start=end;
 		push(getmytimer(),ctx->cpu,rbuf);
 	}

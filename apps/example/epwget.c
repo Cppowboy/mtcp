@@ -18,6 +18,7 @@
 
 #include <mtcp_api.h>
 #include <mtcp_epoll.h>
+#include <mytimer.h>
 #include "cpu.h"
 #include "rss.h"
 #include "http_parsing.h"
@@ -248,6 +249,13 @@ SendHTTPRequest(thread_context_t ctx, int sockid, struct wget_vars *wv)
 			url, host);
 	len = strlen(request);
 
+	long long randtime=weibull(1.46,0.382)*1000;
+	taketime(randtime);
+
+	record rbuf;
+	rbuf.time=rte_rdtsc_precise();
+	rbuf.type=SEND_REQUEST;
+	push(getmytimer(),ctx->core,rbuf);
 	wr = mtcp_write(ctx->mctx, sockid, request, len);
 	if (wr < len) {
 		TRACE_ERROR("Socket %d: Sending HTTP request failed. "

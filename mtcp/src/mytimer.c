@@ -7,6 +7,7 @@
 #include "mytimer.h"
 #include <assert.h>
 #include <string.h>
+#include <math.h>
 
 mytimer* getmytimer()
 {
@@ -47,8 +48,8 @@ void push(mytimer* pmt,int core,record rr)
 	record* r=(record*)malloc(sizeof(record));
 	r->time=rr.time;
 	r->type=rr.type;
-	r->stacktime=rr.stacktime;
-	r->packettime=rr.packettime;
+//	r->stacktime=rr.stacktime;
+//	r->packettime=rr.packettime;
 	r->next=pmt->head[core];
 	pmt->head[core]=r;
 }
@@ -86,27 +87,27 @@ void print(mytimer* pmt)
 	char fname[20];
 	FILE* fout=NULL;
 	record *cur,*nxt;
-//	for(core=0;core<pmt->corenumber;core++)
-//	{
-//		sprintf(fname,"mytimer%d.log",core);
-//		fout=fopen(fname,"w");
-//		if(!fout)
-//		{
-//			fprintf(stderr,"failed to open file\n");
-//			continue;
-//		}
-//		cur=nxt=NULL;
-//		cur=pmt->head[core];
-//		while(cur)
-//		{
-//			nxt=cur->next;
-////			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
+	for(core=0;core<pmt->corenumber;core++)
+	{
+		sprintf(fname,"mytimer%d.log",core);
+		fout=fopen(fname,"w");
+		if(!fout)
+		{
+			fprintf(stderr,"failed to open file\n");
+			continue;
+		}
+		cur=nxt=NULL;
+		cur=pmt->head[core];
+		while(cur)
+		{
+			nxt=cur->next;
+			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
 //			fprintf(fout,"app %lld;stakc %lld;packet %lld\n",
 //					cur->time,cur->stacktime,cur->packettime);
-//			cur=nxt;
-//		}
-//		fclose(fout);
-//	}
+			cur=nxt;
+		}
+		fclose(fout);
+	}
 	fprintf(stderr,"mytimer print finished\n");
 }
 void destroytimer(mytimer* pmt)
@@ -133,5 +134,25 @@ void taketime(long long t)
 		end=rte_rdtsc_precise();
 }
 
+double sampleNormal() {
+	double u = ((double) rand() / (RAND_MAX)) * 2 - 1;
+	double v = ((double) rand() / (RAND_MAX)) * 2 - 1;
+	double r = u * u + v * v;
+	if (r == 0 || r > 1)
+		return sampleNormal();
+	double c = sqrt(-2 * log(r) / r);
+	return u * c;
+}
 
-
+double lognormal(double u,double sigma)
+{
+	double k=sampleNormal();
+	k=k*sigma+u;
+	return exp(k);
+}
+double weibull(double a,double b)
+{
+	double y= ((double) rand() / (RAND_MAX)) * 2 - 1;
+	double x=a*pow(-log(1-y),1.0/b);
+	return x;
+}
