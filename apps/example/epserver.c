@@ -404,6 +404,8 @@ void *
 RunServerThread(void *arg)
 {
 	int core = *(int *)arg;
+	record rbuf;
+	long long start,end;
 	struct thread_context *ctx;
 	mctx_t mctx;
 	int listener;
@@ -434,8 +436,7 @@ RunServerThread(void *arg)
 		TRACE_ERROR("Failed to create listening socket.\n");
 		exit(-1);
 	}
-	record rbuf;
-	long long start,end;
+
 	while (!done[core]) {
 		start=rte_rdtsc_precise();
 		nevents = mtcp_epoll_wait(mctx, ep, events, MAX_EVENTS, -1);
@@ -508,16 +509,17 @@ RunServerThread(void *arg)
 					break;
 			}
 		}
-		end=rte_rdtsc_precise();
-		rbuf.time=end-start;
-		push(getmytimer(),core,rbuf);
-		addtime(getmytimer(),core,APP,rbuf.time);
-		TRACE_INFO("hahaha\n");
+
 	}
 
 	/* destroy mtcp context: this will kill the mtcp thread */
 	mtcp_destroy_context(mctx);
 	pthread_exit(NULL);
+
+	end=rte_rdtsc_precise();
+	rbuf.time=end-start;
+	push(getmytimer(),core,rbuf);
+	addtime(getmytimer(),core,APP,rbuf.time);
 
 	return NULL;
 }
