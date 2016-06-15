@@ -66,6 +66,7 @@ void print(mytimer* pmt)
 						(double)(pmt->time[i][APP])/total,
 						(double)(pmt->time[i][MTCP])/total,
 						(double)(pmt->time[i][PACKETIO])/total);
+		fprintf(stderr,"hehe\n");
 
 	}
 	int core;
