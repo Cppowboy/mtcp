@@ -56,10 +56,17 @@ void print(mytimer* pmt)
 {
 	assert(pmt->corenumber>0);
 	int i;
+	long long total;
 	for(i=0;i<pmt->corenumber;i++)
 	{
+		total=pmt->time[i][APP]+pmt->time[i][MTCP]+pmt->time[i][PACKETIO];
 		fprintf(stderr,"app %lld;stack %lld;packet %lld\n",
 				pmt->time[i][APP],pmt->time[i][MTCP],pmt->time[i][PACKETIO]);
+		fprintf(stderr,"app %lf;stack %lf;packet %lf\n",
+						(double)(pmt->time[i][APP])/total,
+						(double)(pmt->time[i][MTCP])/total,
+						(double)(pmt->time[i][PACKETIO])/total);
+
 	}
 	int core;
 	char fname[20];
