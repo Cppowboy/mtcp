@@ -28,6 +28,7 @@
 typedef struct _record
 {
 	long long time;
+	long long stacktime,packettime;
 	int type;
 	struct _record *next;
 }record;
@@ -45,7 +46,7 @@ void addtime(mytimer* pmt,int core,int type,long long t);
 void setstarttime(mytimer* pmt,int core,long long t);
 void setendtime(mytimer* pmt,int core,long long t);
 void setcorenumber(mytimer* pmt,int cn);
-void push(mytimer* pmt,int core,long long time,int type);
+void push(mytimer* pmt,int core,record r);
 void print(mytimer* pmt);
 void destroytimer(mytimer* pmt);
 void taketime(long long t);

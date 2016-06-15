@@ -42,11 +42,13 @@ void setcorenumber(mytimer* pmt,int cn)
 		pmt->head[i]=NULL;
 	}
 }
-void push(mytimer* pmt,int core,long long time,int type)
+void push(mytimer* pmt,int core,record rr)
 {
 	record* r=(record*)malloc(sizeof(record));
-	r->time=time;
-	r->type=type;
+	r->time=rr.time;
+	r->type=rr.type;
+	r->stacktime=rr.stacktime;
+	r->packettime=rr.packettime;
 	r->next=pmt->head[core];
 	pmt->head[core]=r;
 }
@@ -77,7 +79,8 @@ void print(mytimer* pmt)
 		while(cur)
 		{
 			nxt=cur->next;
-			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
+//			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
+			fprintf(fout,"stakc %lld;packet %lld\n",cur->stacktime,cur->packettime);
 			cur=nxt;
 		}
 		fclose(fout);
