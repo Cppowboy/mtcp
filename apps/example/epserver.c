@@ -17,6 +17,7 @@
 
 #include <mtcp_api.h>
 #include <mtcp_epoll.h>
+#include <mytimer.h>
 
 #include "cpu.h"
 #include "http_parsing.h"
