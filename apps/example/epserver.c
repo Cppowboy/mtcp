@@ -406,6 +406,7 @@ RunServerThread(void *arg)
 	int core = *(int *)arg;
 	record rbuf;
 	long long start,end;
+	start=rte_rdtsc_precise();
 	struct thread_context *ctx;
 	mctx_t mctx;
 	int listener;
@@ -438,7 +439,7 @@ RunServerThread(void *arg)
 	}
 
 	while (!done[core]) {
-		start=rte_rdtsc_precise();
+
 		nevents = mtcp_epoll_wait(mctx, ep, events, MAX_EVENTS, -1);
 		if (nevents < 0) {
 			if (errno != EINTR)
