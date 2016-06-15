@@ -55,8 +55,9 @@ void push(mytimer* pmt,int core,record rr)
 void print(mytimer* pmt)
 {
 	assert(pmt->corenumber>0);
-	int i;
+	int i,j;
 	long long total;
+
 	for(i=0;i<pmt->corenumber;i++)
 	{
 		total=pmt->time[i][APP]+pmt->time[i][MTCP]+pmt->time[i][PACKETIO];
@@ -66,9 +67,21 @@ void print(mytimer* pmt)
 						(double)(pmt->time[i][APP])/total,
 						(double)(pmt->time[i][MTCP])/total,
 						(double)(pmt->time[i][PACKETIO])/total);
-		fprintf(stderr,"hehe\n");
-
 	}
+
+	long long all[3];
+	long long alltotal=0;
+	for(j=0;j<3;j++)//type
+	{
+		all[j]=0;
+		for(i=0;i<pmt->corenumber;i++)
+		{
+			all[j]+=pmt->time[i][j];
+		}
+		alltotal+=all;
+	}
+	fprintf(stderr,"app %lf stack %lf packet %lf\n",
+			(double)all[0]/alltotal,(double)all[1]/alltotal,(double)all[2]/alltotal);
 	int core;
 	char fname[20];
 	FILE* fout=NULL;
