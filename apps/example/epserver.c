@@ -510,6 +510,7 @@ RunServerThread(void *arg)
 		}
 		end=rte_rdtsc_precise();
 		rbuf.time=end-start;
+		push(getmytimer(),core,rbuf);
 		addtime(getmytimer(),core,APP,rbuf.time);
 		TRACE_INFO("hahaha\n");
 	}
