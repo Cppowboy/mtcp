@@ -78,9 +78,9 @@ void print(mytimer* pmt)
 		{
 			all[j]+=pmt->time[i][j];
 		}
-		alltotal+=all;
+		alltotal+=all[j];
 	}
-	fprintf(stderr,"app %lf stack %lf packet %lf\n",
+	fprintf(stderr,"average:app %lf stack %lf packet %lf\n",
 			(double)all[0]/alltotal,(double)all[1]/alltotal,(double)all[2]/alltotal);
 	int core;
 	char fname[20];
