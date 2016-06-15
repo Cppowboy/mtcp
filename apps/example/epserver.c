@@ -511,6 +511,7 @@ RunServerThread(void *arg)
 		end=rte_rdtsc_precise();
 		rbuf.time=end-start;
 		addtime(getmytimer(),core,APP,rbuf.time);
+		TRACE_INFO("hahaha\n");
 	}
 
 	/* destroy mtcp context: this will kill the mtcp thread */
