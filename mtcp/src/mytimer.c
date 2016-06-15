@@ -80,7 +80,8 @@ void print(mytimer* pmt)
 		{
 			nxt=cur->next;
 //			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
-			fprintf(fout,"stakc %lld;packet %lld\n",cur->stacktime,cur->packettime);
+			fprintf(fout,"app %lld;stakc %lld;packet %lld\n",
+					cur->time,cur->stacktime,cur->packettime);
 			cur=nxt;
 		}
 		fclose(fout);

@@ -433,8 +433,10 @@ RunServerThread(void *arg)
 		TRACE_ERROR("Failed to create listening socket.\n");
 		exit(-1);
 	}
-
+	record rbuf;
+	long long start,end;
 	while (!done[core]) {
+		start=rte_rdtsc_precise();
 		nevents = mtcp_epoll_wait(mctx, ep, events, MAX_EVENTS, -1);
 		if (nevents < 0) {
 			if (errno != EINTR)
@@ -444,7 +446,6 @@ RunServerThread(void *arg)
 
 		do_accept = FALSE;
 		for (i = 0; i < nevents; i++) {
-
 			if (events[i].data.sockid == listener) {
 				/* if the event is for the listener, accept connection */
 				do_accept = TRUE;
@@ -506,7 +507,9 @@ RunServerThread(void *arg)
 					break;
 			}
 		}
-
+		end=rte_rdtsc_precise();
+		rbuf.time=end-start;
+		addtimer(getmytimer(),core,APP,rbuf.time);
 	}
 
 	/* destroy mtcp context: this will kill the mtcp thread */
