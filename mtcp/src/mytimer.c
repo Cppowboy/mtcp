@@ -86,27 +86,27 @@ void print(mytimer* pmt)
 	char fname[20];
 	FILE* fout=NULL;
 	record *cur,*nxt;
-	for(core=0;core<pmt->corenumber;core++)
-	{
-		sprintf(fname,"mytimer%d.log",core);
-		fout=fopen(fname,"w");
-		if(!fout)
-		{
-			fprintf(stderr,"failed to open file\n");
-			continue;
-		}
-		cur=nxt=NULL;
-		cur=pmt->head[core];
-		while(cur)
-		{
-			nxt=cur->next;
-//			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
-			fprintf(fout,"app %lld;stakc %lld;packet %lld\n",
-					cur->time,cur->stacktime,cur->packettime);
-			cur=nxt;
-		}
-		fclose(fout);
-	}
+//	for(core=0;core<pmt->corenumber;core++)
+//	{
+//		sprintf(fname,"mytimer%d.log",core);
+//		fout=fopen(fname,"w");
+//		if(!fout)
+//		{
+//			fprintf(stderr,"failed to open file\n");
+//			continue;
+//		}
+//		cur=nxt=NULL;
+//		cur=pmt->head[core];
+//		while(cur)
+//		{
+//			nxt=cur->next;
+////			fprintf(fout,"%d event at %lld\n",cur->type,cur->time);
+//			fprintf(fout,"app %lld;stakc %lld;packet %lld\n",
+//					cur->time,cur->stacktime,cur->packettime);
+//			cur=nxt;
+//		}
+//		fclose(fout);
+//	}
 	fprintf(stderr,"mytimer print finished\n");
 }
 void destroytimer(mytimer* pmt)
