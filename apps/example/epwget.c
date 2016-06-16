@@ -240,10 +240,10 @@ SendHTTPRequest(thread_context_t ctx, int sockid, struct wget_vars *wv)
 	wv->recv = 0;
 	wv->header_len = wv->file_len = 0;
 
-	int randsize;
-	while(randsize<=0||randsize>=128000)
-		randsize=lognormal(9.357,1.318);
-	sprintf(url,"%d",randsize);
+//	int randsize;
+//	while(randsize<=0||randsize>=128000)
+//		randsize=lognormal(9.357,1.318);
+//	sprintf(url,"%d",randsize);
 
 	snprintf(request, HTTP_HEADER_LEN, "GET %s HTTP/1.0\r\n"
 			"User-Agent: Wget/1.12 (linux-gnu)\r\n"
