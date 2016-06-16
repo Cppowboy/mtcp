@@ -257,8 +257,8 @@ SendHTTPRequest(thread_context_t ctx, int sockid, struct wget_vars *wv)
 			url, host);
 	len = strlen(request);
 
-	long long randtime=weibull(1.46,0.382)*1000;
-	taketime(randtime);
+//	long long randtime=weibull(1.46,0.382)*1000;
+//	taketime(randtime);
 
 	record rbuf;
 	rbuf.time=rte_rdtsc_precise();
