@@ -241,8 +241,11 @@ SendHTTPRequest(thread_context_t ctx, int sockid, struct wget_vars *wv)
 	wv->header_len = wv->file_len = 0;
 
 	int randsize;
-	while(randsize<=0||randsize>=128*1024)
-		randsize=lognormal(9.357,1.318);
+//	while(randsize<=0||randsize>=128*1024)
+	randsize=lognormal(9.357,1.318);
+	if(randsize<0)
+		randsize=-randsize;
+	randsize=randsize%(128*1024);
 	sprintf(url,"%d",randsize);
 
 	snprintf(request, HTTP_HEADER_LEN, "GET %s HTTP/1.0\r\n"
