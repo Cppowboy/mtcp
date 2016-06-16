@@ -7,6 +7,7 @@ line=fin.readline()
 records=[]
 while line:
     a,b=line.split('event at')
+    a,b=int(a),int(b)
     start=min(start,b)
     end=max(end,b)
     records.append((a,b))
@@ -18,6 +19,7 @@ bef=0
 for i in range(len(records)-1,0,-1):
     if records[i][0]==6:
         requests[(records[i][1]-start)/N]+=1 
+        #print 'add request\n'
     elif bef==0:
         bef=records[i]
     else:
@@ -28,11 +30,11 @@ for i in range(len(records)-1,0,-1):
                 b=min(a/step*step+step,records[i][1])
                 time[t][(a-start)/step]+=b-a
                 a=b 
+            #print 'add item\n'
             bef=0
         else:
-            print 'error\n'
+            print bef,records[i]
+            bef=records[i]
 print start,end,step 
 print requests
-print apptime
-print stacktime
-print packettime
+print time
