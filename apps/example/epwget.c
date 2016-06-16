@@ -241,7 +241,7 @@ SendHTTPRequest(thread_context_t ctx, int sockid, struct wget_vars *wv)
 	wv->header_len = wv->file_len = 0;
 
 	int randsize;
-	while(randsize<=0||randsize>=10*1024*1024)
+	while(randsize<=0||randsize>=128*1024)
 		randsize=lognormal(9.357,1.318);
 	sprintf(url,"%d",randsize);
 
